@@ -11,7 +11,7 @@ RUN apk add --no-cache --virtual .build-deps git make && \
 FROM alpine:latest
 
 LABEL maintainer="Roald Clark <roaldclark@gmail.com>"
-LABEL org.opencontainers.image.source="https://github.com/qculug/dockerfiles
+LABEL org.opencontainers.image.source="https://github.com/qculug/dockerfiles"
 
 RUN apk add --no-cache ca-certificates tzdata
 
