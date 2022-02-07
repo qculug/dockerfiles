@@ -21,7 +21,7 @@ jobs:
           pacman -Sy --noconfirm git
       - name: Git pull from ${{ github.repository }}
         run: |
-          git clone https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
+          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
       - name: Install nvchecker
         run: |
           pacman -Sy --noconfirm nvchecker
@@ -35,10 +35,13 @@ jobs:
           cd ${{ github.repository }}
           echo ::set-output name=names::$(nvcmp --file nvchecker.toml --quiet | sed ":a;N;s/\\n/, /g;ta" | sed 's/^/[/;s/$/]/')
       - name: Modify build.yml
+        if: ${{ steps.nvchecker.outputs.names != null }}
         run: |
           cd ${{ github.repository }}
           sed -i "s/dockerfiles:.*/dockerfiles: ${{ steps.nvchecker.outputs.names }}/" .github/workflows/build.yml
       - name: Git push to ${{ github.repository }}
+        if: ${{ steps.nvchecker.outputs.names != null }}
+        id: git-run
         continue-on-error: true
         run: |
           cd ${{ github.repository }}
@@ -48,3 +51,6 @@ jobs:
           git commit -m "update: new_ver.json"
           git pull --rebase
           git push
+      - name: Run build
+        if: ${{ steps.nvchecker.outputs.names != null }}
+        uses: ./.github/workflows/build.yml
