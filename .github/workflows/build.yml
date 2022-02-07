@@ -9,20 +9,15 @@ jobs:
   build:
     name: build and push docker image to ghcr.io
     runs-on: ubuntu-latest
-    container:
-      image: docker.io/archlinux:latest
+    outputs:
+      success: ${{ steps.success.outputs.name }}
     strategy:
       fail-fast: false
       matrix:
         dockerfiles: [proxypool, tor]
     steps:
-      - name: Install git
-        run: |
-          pacman -Sy --noconfirm git
-      - name: Git pull from ${{ github.repository }}
-        run: |
-          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
-          cd ${{ github.repository }}
+      - name: Check out the repo
+        uses: actions/checkout@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -38,18 +33,36 @@ jobs:
         with:
           platforms:
             linux/amd64,linux/arm,linux/arm64
-          context: ${{ github.repository }}
+          context: .
           file: ${{ matrix.dockerfiles }}/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.dockerfiles }}:latest
+      - name: Set build success output
+        id: success
+        run: |
+          echo ::set-output name=name::$(matrix.dockerfiles)
+  update:
+    name: update old_ver.json to ${{ github.repository }}
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: docker.io/archlinux:latest
+    steps:
+      - name: Install git
+        run: |
+          pacman -Sy --noconfirm git
+      - name: Git pull from ${{ github.repository }}
+        run: |
+          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
+          cd ${{ github.repository }}
       - name: Install nvchecker
         run: |
           pacman -Sy --noconfirm nvchecker
       - name: Run nvtake
         run: |
           cd ${{ github.repository }}
-          nvtake --file nvchecker.toml ${{ matrix.dockerfiles }}
+          nvtake --file nvchecker.toml ${{ needs.build.outputs.success }}
       - name: Git push to ${{ github.repository }}
         run: |
           cd ${{ github.repository }}
