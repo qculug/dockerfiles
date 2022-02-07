@@ -12,6 +12,7 @@ on:
 jobs:
   nvchecker:
     name: run nvchecker for archlinux
+    runs-on: ubuntu-latest
     container:
       image: docker.io/archlinux:latest
     steps:
