@@ -1,5 +1,6 @@
 name: build dockerfiles
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'new_ver.json'
