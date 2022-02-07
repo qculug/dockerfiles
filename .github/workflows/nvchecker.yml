@@ -16,13 +16,16 @@ jobs:
     container:
       image: docker.io/archlinux:latest
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Install git
+        run: |
+          pacman -Sy --noconfirm git
+      - name: Git pull from ${{ github.repository }}
+        run: |
+          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          cd dockerfiles
       - name: Install nvchecker
         run: |
-          pacman -Sy --noconfirm git nvchecker
+          pacman -Sy --noconfirm nvchecker
       - name: Run nvchecker
         run: |
           nvchecker --file nvchecker.toml
@@ -35,9 +38,7 @@ jobs:
           sed -i "s/dockerfiles:.*/dockerfiles: ${{ steps.nvchecker.outputs.names }}/" .github/workflows/build.yml
       - name: Git push to ${{ github.repository }}
         run: |
-          git init
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .github/workflows/build.yml new_ver.json
-          git remote add origin "https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}"
-          git push --set-upstream origin master
+          git push

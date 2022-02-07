@@ -15,10 +15,13 @@ jobs:
       matrix:
         dockerfiles: [proxypool, tor]
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Install git
+        run: |
+          pacman -Sy --noconfirm git
+      - name: Git pull from ${{ github.repository }}
+        run: |
+          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          cd dockerfiles
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -41,15 +44,13 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/${{ matrix.dockerfiles }}:latest
       - name: Install nvchecker
         run: |
-          pacman -Sy --noconfirm git nvchecker
+          pacman -Sy --noconfirm nvchecker
       - name: Run nvtake
         run: |
           nvtake --file nvchecker.toml ${{ matrix.dockerfiles }}
       - name: Git push to ${{ github.repository }}
         run: |
-          git init
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add old_ver.json
-          git remote add origin "https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}"
-          git push --set-upstream origin master
+          git push
