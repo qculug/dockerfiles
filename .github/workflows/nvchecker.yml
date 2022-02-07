@@ -13,6 +13,8 @@ jobs:
   nvchecker:
     name: run nvchecker for archlinux
     runs-on: ubuntu-latest
+    outputs:
+      names: ${{ steps.nvchecker.outputs.names }}
     container:
       image: docker.io/archlinux:latest
     steps:
@@ -51,6 +53,8 @@ jobs:
           git commit -m "update: new_ver.json"
           git pull --rebase
           git push
-      - name: Run build
-        if: ${{ steps.nvchecker.outputs.names != null }}
-        uses: qculug/dockerfiles/.github/workflows/build.yml@master
+  call-build:
+    name: Call build
+    needs: nvchecker
+    if: ${{ needs.nvchecker.outputs.names != null }}
+    uses: qculug/dockerfiles/.github/workflows/build.yml@master
