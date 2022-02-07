@@ -2,7 +2,7 @@ name: build dockerfiles
 on:
   workflow_call:
     secrets:
-      token:
+      PACKAGES_TOKEN:
         required: true
   workflow_dispatch:
 
@@ -28,7 +28,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.token }}
+          password: ${{ secrets.PACKAGES_TOKEN }}
       - name: Build and Push
         uses: docker/build-push-action@v2
         with:
