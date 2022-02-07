@@ -51,6 +51,9 @@ jobs:
           git commit -m "update: new_ver.json"
           git pull --rebase
           git push
+      - name: Check out the repo
+        if: ${{ steps.nvchecker.outputs.names != null }}
+        uses: actions/checkout@v2
       - name: Run build
         if: ${{ steps.nvchecker.outputs.names != null }}
-        uses: ${{ github.repository }}/.github/workflows/build.yml
+        uses: ./.github/workflows/build.yml
