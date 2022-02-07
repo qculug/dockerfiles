@@ -1,0 +1,11 @@
+[__config__]
+oldver = "old_ver.json"
+newver = "new_ver.json"
+
+[proxypool]
+source = "github"
+github = "qculug/proxypool"
+
+[tor]
+source = "cmd"
+cmd = "curl -s https://git.alpinelinux.org/aports/plain/community/tor/APKBUILD | grep '^pkgver=' | awk -F '=' '{print $2}'"

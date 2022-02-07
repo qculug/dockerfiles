@@ -1,16 +1,15 @@
 name: build dockerfiles
 on:
   push:
-    paths-ignore:
-      - 'LICENSE'
-      - 'README.md'
-  schedule:
-    - cron: '0 0 * * *'
+    paths:
+      - 'new_ver.json'
 
 jobs:
   build:
     name: build and push docker image to ghcr.io
     runs-on: ubuntu-latest
+    container:
+      image: docker.io/archlinux:latest
     strategy:
       fail-fast: false
       matrix:
@@ -38,3 +37,16 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.dockerfiles }}:latest
+      - name: Install nvchecker
+        run: |
+          pacman -Sy --noconfirm git nvchecker
+      - name: Run nvtake
+        run: |
+          nvtake --file nvchecker.toml ${{ matrix.dockerfiles }}
+      - name: Git push to ${{ github.repository }}
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add old_ver.json
+          git remote add origin "https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}"
+          git push --set-upstream origin master

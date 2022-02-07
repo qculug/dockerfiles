@@ -1,0 +1,42 @@
+name: nvchecker dockerfiles
+on:
+  push:
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.md'
+      - 'new_ver.json'
+      - 'old_ver.json'
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  nvchecker:
+    name: run nvchecker for archlinux
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/archlinux:latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        with:
+          repository: qculug/dockerfiles
+      - name: Install nvchecker
+        run: |
+          pacman -Sy --noconfirm git nvchecker
+      - name: Run nvchecker
+        run: |
+          nvchecker --file nvchecker.toml
+      - name: Get information
+        id: nvchecker
+        run: |
+          echo ::set-output name=names::$(nvcmp --file nvchecker.toml --quiet | sed ":a;N;s/\\n/, /g;ta" | sed 's/^/[/;s/$/]/')
+      - name: Modify build.yml
+        run: |
+          sed -i "s/dockerfiles:.*/dockerfiles: ${{ steps.nvchecker.outputs.names }}/" .github/workflows/build.yml
+      - name: Git push to ${{ github.repository }}
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .github/workflows/build.yml new_ver.json
+          git remote add origin "https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}"
+          git push --set-upstream origin master
