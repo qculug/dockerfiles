@@ -1,6 +1,9 @@
 name: build dockerfiles
 on:
   workflow_call:
+    secrets:
+      PACKAGES_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:

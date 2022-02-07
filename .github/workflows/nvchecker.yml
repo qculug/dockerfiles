@@ -58,3 +58,5 @@ jobs:
     needs: nvchecker
     if: ${{ needs.nvchecker.outputs.names != null }}
     uses: qculug/dockerfiles/.github/workflows/build.yml@master
+    with:
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
