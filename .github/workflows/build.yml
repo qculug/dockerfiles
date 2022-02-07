@@ -45,7 +45,6 @@ jobs:
           repository: lilydjwg/nvchecker
       - name: Install depends
         run: |
-          apt update
           apt install -y libcurl4-openssl-dev libssl-dev
       - name: Install nvchecker
         uses: actions/setup-python@v2
