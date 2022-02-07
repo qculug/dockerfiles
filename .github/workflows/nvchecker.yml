@@ -19,7 +19,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
         with:
-          repository: qculug/dockerfiles
+          fetch-depth: 0
       - name: Install nvchecker
         run: |
           pacman -Sy --noconfirm git nvchecker
