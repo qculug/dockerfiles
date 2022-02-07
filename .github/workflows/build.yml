@@ -20,8 +20,8 @@ jobs:
           pacman -Sy --noconfirm git
       - name: Git pull from ${{ github.repository }}
         run: |
-          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          cd dockerfiles
+          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
+          cd ${{ github.repository }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -37,7 +37,7 @@ jobs:
         with:
           platforms:
             linux/amd64,linux/arm,linux/arm64
-          context: .
+          context: ${{ github.repository }}
           file: ${{ matrix.dockerfiles }}/Dockerfile
           push: true
           tags: |
@@ -50,7 +50,10 @@ jobs:
           nvtake --file nvchecker.toml ${{ matrix.dockerfiles }}
       - name: Git push to ${{ github.repository }}
         run: |
+          cd ${{ github.repository }}
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add old_ver.json
+          git commit -m "update: old_ver.json"
+          git pull --rebase
           git push
