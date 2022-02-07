@@ -21,7 +21,7 @@ jobs:
           pacman -Sy --noconfirm git
       - name: Git pull from ${{ github.repository }}
         run: |
-          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
+          git clone https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
       - name: Install nvchecker
         run: |
           pacman -Sy --noconfirm nvchecker
@@ -41,8 +41,8 @@ jobs:
       - name: Git push to ${{ github.repository }}
         run: |
           cd ${{ github.repository }}
-          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --local user.name "${{ github.actor }}"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add .github/workflows/build.yml new_ver.json
           git commit -m "update: new_ver.json"
           git pull --rebase
