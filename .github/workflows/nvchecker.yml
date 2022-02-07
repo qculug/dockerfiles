@@ -53,4 +53,4 @@ jobs:
           git push
       - name: Run build
         if: ${{ steps.nvchecker.outputs.names != null }}
-        uses: qculug/dockerfiles/.github/workflows/build.yml
+        uses: ./qculug/dockerfiles/.github/workflows/build.yml
