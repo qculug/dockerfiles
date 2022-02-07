@@ -47,6 +47,7 @@ jobs:
           pacman -Sy --noconfirm nvchecker
       - name: Run nvtake
         run: |
+          cd ${{ github.repository }}
           nvtake --file nvchecker.toml ${{ matrix.dockerfiles }}
       - name: Git push to ${{ github.repository }}
         run: |

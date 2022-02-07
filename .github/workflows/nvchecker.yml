@@ -27,10 +27,12 @@ jobs:
           pacman -Sy --noconfirm nvchecker
       - name: Run nvchecker
         run: |
+          cd ${{ github.repository }}
           nvchecker --file nvchecker.toml
       - name: Get information
         id: nvchecker
         run: |
+          cd ${{ github.repository }}
           echo ::set-output name=names::$(nvcmp --file nvchecker.toml --quiet | sed ":a;N;s/\\n/, /g;ta" | sed 's/^/[/;s/$/]/')
       - name: Modify build.yml
         run: |
