@@ -12,7 +12,6 @@ on:
 jobs:
   nvchecker:
     name: run nvchecker for archlinux
-    runs-on: ubuntu-latest
     container:
       image: docker.io/archlinux:latest
     steps:
@@ -39,6 +38,7 @@ jobs:
           cd ${{ github.repository }}
           sed -i "s/dockerfiles:.*/dockerfiles: ${{ steps.nvchecker.outputs.names }}/" .github/workflows/build.yml
       - name: Git push to ${{ github.repository }}
+        continue-on-error: true
         run: |
           cd ${{ github.repository }}
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
