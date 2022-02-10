@@ -16,7 +16,7 @@ RUN echo 'https://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repo
 RUN apk add --no-cache tor && \
     chmod 700 /var/lib/tor
 
-COPY --from=builder /build/obfs4/obfs4proxy /usr/local/bin/obfs4proxy
+COPY --from=builder /build/obfs4/obfs4proxy/obfs4proxy /usr/local/bin/obfs4proxy
 
 RUN chmod +x /usr/local/bin/obfs4proxy
 
