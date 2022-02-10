@@ -23,7 +23,7 @@ jobs:
           pacman -Sy --noconfirm git
       - name: Git pull from ${{ github.repository }}
         run: |
-          git clone https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
+          git clone https://${{ github.actor }}:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git ${{ github.repository }}
       - name: Install nvchecker
         run: |
           pacman -Sy --noconfirm nvchecker
