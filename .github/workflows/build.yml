@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dockerfiles: [proxypool, tor]
+        dockerfiles: [proxypool]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
