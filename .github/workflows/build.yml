@@ -10,6 +10,8 @@ jobs:
   build:
     name: build and push docker image to ghcr.io
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     outputs:
       success: ${{ steps.success.outputs.name }}
     strategy:
