@@ -2,6 +2,7 @@ name: nvchecker dockerfiles
 on:
   push:
     paths-ignore:
+      - '.github/workflows/build.yml'
       - 'LICENSE'
       - 'README.md'
       - 'new_ver.json'
