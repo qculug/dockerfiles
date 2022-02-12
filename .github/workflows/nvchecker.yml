@@ -31,12 +31,14 @@ jobs:
       - name: Run nvchecker
         run: |
           cd ${{ github.repository }}
+          sed -i "s/ghp_<stripped>/${{ secrets.KEYFILE_TOKEN }}/" keyfile.toml
           nvchecker --file nvchecker.toml
       - name: Get information
         id: nvchecker
         run: |
           cd ${{ github.repository }}
           echo ::set-output name=names::$(nvcmp --file nvchecker.toml --quiet | sed ":a;N;s/\\n/, /g;ta" | sed 's/^/[/;s/$/]/')
+          git restore keyfile.toml
       - name: Modify build.yml
         if: ${{ steps.nvchecker.outputs.names != null }}
         run: |
