@@ -9,3 +9,8 @@ github = "qculug/proxypool"
 [tor]
 source = "cmd"
 cmd = "curl -s https://git.alpinelinux.org/aports/plain/community/tor/APKBUILD | grep '^pkgver=' | awk -F '=' '{print $2}'"
+
+[v2ray]
+source = "github"
+github = "v2fly/v2ray-core"
+use_latest_tag = true

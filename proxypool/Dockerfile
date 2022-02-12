@@ -19,15 +19,15 @@ ARG HOME="/home/proxypool"
 
 RUN adduser -S proxypool -G nobody
 
-COPY --from=builder /build/proxypool/bin/proxypool-docker "${HOME}"/proxypool
-COPY --from=builder /build/proxypool/assets "${HOME}"/assets
-COPY --from=builder /build/proxypool/config/config.yaml "${HOME}"/config.yaml
-COPY --from=builder /build/proxypool/config/source.yaml "${HOME}"/config/source.yaml
+COPY --from=builder /build/proxypool/bin/proxypool-docker $HOME/proxypool
+COPY --from=builder /build/proxypool/assets $HOME/assets
+COPY --from=builder /build/proxypool/config/config.yaml $HOME/config.yaml
+COPY --from=builder /build/proxypool/config/source.yaml $HOME/config/source.yaml
 
-RUN chown -R proxypool:nobody "${HOME}"
+RUN chown -R proxypool:nobody $HOME
 
 USER proxypool
 
-WORKDIR "${HOME}"
+WORKDIR $HOME
 
-CMD ["sh", "-c", "${HOME}/proxypool -d"]
+CMD ["sh", "-c", "$HOME/proxypool -d"]
