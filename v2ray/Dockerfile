@@ -4,6 +4,7 @@ WORKDIR /build
 
 RUN apk add --no-cache --virtual .build-deps git && \
     git clone https://github.com/v2fly/v2ray-core.git && \
+    cd v2ray-core && \
     git checkout $(git describe --abbrev=0 --tags) && \
     go build -o v2ray ./main && \
     go build -o v2ctl ./infra/control/main
