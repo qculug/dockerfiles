@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dockerfiles: [proxypool]
+        dockerfiles: [v2ray]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
