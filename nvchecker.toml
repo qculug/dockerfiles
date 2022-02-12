@@ -15,3 +15,5 @@ cmd = "curl -s https://git.alpinelinux.org/aports/plain/community/tor/APKBUILD |
 source = "github"
 github = "v2fly/v2ray-core"
 use_latest_tag = true
+from_pattern = 'v(\d+).(\d+).(\d+)'
+to_pattern = '\1.\2.\3'
